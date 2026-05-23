@@ -54,14 +54,14 @@ def on_click(x, y, button, pressed):
 
 # STEP 1: Listener for picking key / stops when key is picked
 # BLOCKING. This listener blocks all other code from running until a key is picked. 
-with keyboard.Listener(on_press=pick_key) as listener: 
-    listener.join()
+with keyboard.Listener(on_press=pick_key) as pickKeyListener: 
+    pickKeyListener.join()
 
 # STEP 2: Listener for BOTH key press and mouse click
-keyboardListener = keyboard.Listener(on_press=targetKeyPress)
+targetKeyPressListener = keyboard.Listener(on_press=targetKeyPress)
 mouseListener = mouse.Listener(on_click=on_click)
 
-keyboardListener.start()
+targetKeyPressListener.start()
 mouseListener.start()
 
 # STEP 3: Function that only runs if both target key and mouse were clicked.
