@@ -6,7 +6,7 @@ import subprocess
 
 
 # Setting working directory
-os.chdir(r"C:\Users\adrian.lowery\python-scripts\src\Big Projects\SOP Automator")
+os.chdir(r"C:\Users\adria\Documents\Coding\Python\Big Projects\SOP Automater\SOP-Automater")
 print(os.getcwd())
 
 frames = []
