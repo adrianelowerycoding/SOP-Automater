@@ -12,50 +12,51 @@ Future additions I want to make are: Selection drawing in real time and the free
 
 import cv2
 
-class ScreenshotDraw:
-
+class ScreenshotDraw: 
+   
     def __init__(self, image_path):
         self.top_left_corner=[]
         self.bottom_right_corner=[]
-        self.image_path = r"C:\Users\adria\Documents\Coding\Python\Big Projects\SOP Automater\SOP-Automater\Screenshots\test.png"
-
+        # r"C:\Users\adria\Documents\Coding\Python\Big Projects\SOP Automater\SOP-Automater\Screenshots\test.png"
         self.image = cv2.imread(image_path)
-        self.tempImage = image.copy()
- 
-# function which will be called on mouse input
-def drawRectangle(action, x, y, flags, *userdata):
-  # Referencing global variables
-  global top_left_corner, bottom_right_corner
-  # Mark the top left corner when left mouse button is pressed
-  if action == cv2.EVENT_LBUTTONDOWN:
-    top_left_corner = [(x,y)]
-    # When left mouse button is released, mark bottom right corner
-  elif action == cv2.EVENT_LBUTTONUP:
-    bottom_right_corner = [(x,y)]   
-    # Draw the rectangle
-    cv2.rectangle(image, top_left_corner[0], bottom_right_corner[0], (0,255,0),2, 8)
-    cv2.imshow("Window",image)
+        self.tempImage = self.image.copy()
+        
+        # function which will be called on mouse input
+    def drawRectangle(self, action, x, y, flags, *userdata):
+        # Mark the top left corner when left mouse button is pressed
+        if action == cv2.EVENT_LBUTTONDOWN:
+            self.top_left_corner = [(x,y)]
+            # When left mouse button is released, mark bottom right corner
+        elif action == cv2.EVENT_LBUTTONUP:
+            self.bottom_right_corner = [(x,y)]   
+            # Draw the rectangle
+            cv2.rectangle(self.image, self.top_left_corner[0], self.bottom_right_corner[0], (0,255,0),2, 8)
 
-# Creating the Window the screenshot sits in. 
-# cv2.WINDOW_NORMAL allows the window to be resizable
-cv2.namedWindow("Window", cv2.WINDOW_NORMAL)
-# Setting the window's size to full screen. 
-cv2.setWindowProperty("Window", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
-# Listens for left button mouse press and release
-cv2.setMouseCallback("Window", drawRectangle)
+            cv2.imshow("Window", self.image)
 
-k=0
 
-while k!=113: 
-    # Actually running/showing/opening the Window we created
-    cv2.imshow("Window", image)
-    k = cv2.waitKey(0)
+    def run(self):
+        # Creating the Window the screenshot sits in. 
+        # cv2.WINDOW_NORMAL allows the window to be resizable
+        cv2.namedWindow("Window", cv2.WINDOW_NORMAL)
+        # Setting the window's size to full screen.
+        cv2.setWindowProperty("Window", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+        # Calls/loads the drawRectangle method and starts listening for the mouse event. Immediately after loading 
+        # it runs the while loop below. 
+        cv2.setMouseCallback("Window", self.drawRectangle)
 
-    if (k == 99):
-        image = tempImage.copy()
-        cv2.imshow("Window", image)
+        k=0
 
-cv2.destroyAllWindows()
+        while k!=113: # q key ends the loop
+            # Actually running/showing/opening the Window we created
+            cv2.imshow("Window", self.image)
+            k = cv2.waitKey(0)
+
+            if (k == 99): # c key clears the current selection
+                image = self.tempImage.copy()
+                cv2.imshow("Window", image)
+
+        cv2.destroyAllWindows()
 
 # This is better than hardcoding ASCII
 # while True:
