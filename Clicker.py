@@ -1,4 +1,20 @@
+"""
+IDEAS: 
+
+    I think this module should only be for key selecting. These keys will be used in other modules to start screenshots.  
+    OR preferably just make both classes, organize them by duties, and make them work together in the main.py.
+
+    - Fullscreen screenshot 1 button command. User chooses. 
+    - Full window screenshot 1 button command. User chooses. 
+    - Fullscreen screenshot + selection/cropping 1 button command. User chooses. 
+        - This one works w/ cv2Test bc you have to also use the mouse. I think probably just have cv2 pull up the 
+          
+"""
+
+
+
 from pynput import mouse, keyboard
+import keyboard as kb
 # Using Listener and Button
 from threading import Event
 import mss
@@ -14,19 +30,43 @@ comboEvent = Event()
 increment = 0
 screenshotsFolder = r'C:\Users\adria\Documents\Coding\Python\Big Projects\SOP Automater\SOP-Automater\Screenshots'
 
+BEGINNING_DISABLED_KEYS = [
+    "left windows",
+    "right windows",
+    "f1", "f2", "f3", "f4",
+    "f5", "f6", "f7", "f8",
+    "f9", "f10", "f11", "f12",
+]
+
+user_disabled_keys = []
+
+# Disables the keys in the array
+for key in BEGINNING_DISABLED_KEYS: 
+    kb.block_key(key)
+
 # User chooses their screenshots naming convention
 screenshotsFile = input("Screenshot Naming Convention: ").strip()
-
 
 # User chooses their key
 print("Program a key:")
 
-def pick_key(key):
+def pick_key(key): # make this for full screen
     global targetKey
+    print(key)
     targetKey = key
+    print(key)
     keyString = str(key)[4:]
     print(type(keyString))
     print(f"Selected Key: {keyString}")
+    kb.block_key(keyString)
+    for key in BEGINNING_DISABLED_KEYS:
+        if keyString != key: # Don't let important keys get used, like the alphabet. Ban the alphabet. 
+            kb.unblock_key(key)
+            # I stopped here. 
+
+   # input("Type your chosen key:") # This was a test for alphabet chars. If you blocked a key you can't type it or use it in
+                                    # any other context than what you assigned it for. 
+
     return False # Stops listener 
 
 # See if user's button has been pressed
