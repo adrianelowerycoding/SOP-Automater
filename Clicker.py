@@ -11,7 +11,7 @@ targetKey = None
 targetKeyPressed = False # this was the "armed"
 mouseLeftClicked = False
 comboEvent = Event()
-screenshotsFolder = r'C:\Users\adrian.lowery\python-scripts\src\Big Projects\SOP Automator\Screenshots'
+screenshotsFolder = r'C:\Users\adria\Documents\Coding\Python\Big Projects\SOP Automater\SOP-Automater\Screenshots'
 
 # User chooses their screenshots naming convention
 screenshotsFile = input("Screenshot Naming Convention: ").strip()
@@ -74,11 +74,8 @@ while True:
     print("Combo detected. Taking screenshot.")
     
     with mss.MSS() as screenshot: 
-        monitor = screenshot.monitors[3] # primary screen
-        img = screenshot.grab(monitor)
-
-        mss.tools.to_png(img.rgb, img.size, output=screenshotsFolderFile)
-
+        screenshot.shot(output=screenshotsFolderFile)
+        
     targetKeyPressed = False
     comboEvent.clear()
 
@@ -97,7 +94,24 @@ while True:
     #     mouseLeftClicked = False
 
 
+# First Method: screenshot.grab and .to_png
+# The dif. is that .grab captures raw data, .to_png takes that raw data and can edit color, size, and file name. 
+# .shot only quickly captures the entire screen and saves it. 
 
+# with mss.MSS() as screenshot: 
+#         monitor = screenshot.monitors[3] # primary screen
+#         img = screenshot.grab(monitor)
+
+#         mss.tools.to_png(img.rgb, img.size, output=screenshotsFolderFile)
+
+
+# Second Method: shot() 
+# This is really only for taking really quick screenshots and saving them, not editing them. 
+# It automatically takes screenshot of the default primary screen.
+# with mss.MSS() as screenshot: 
+#     screenshot.shot(output=screenshotsFolderFile)
+
+    
 
 # I want the program to do something (screenshot and output to document) then reset the targetKeyPressed and mouseLeftClicked values and 
 # continue listening. 
