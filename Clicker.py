@@ -11,13 +11,12 @@ targetKey = None
 targetKeyPressed = False # this was the "armed"
 mouseLeftClicked = False
 comboEvent = Event()
+increment = 0
 screenshotsFolder = r'C:\Users\adria\Documents\Coding\Python\Big Projects\SOP Automater\SOP-Automater\Screenshots'
 
 # User chooses their screenshots naming convention
 screenshotsFile = input("Screenshot Naming Convention: ").strip()
-screenshotsFile = screenshotsFile + ".png"
-screenshotsFolderFile = rf'{screenshotsFolder}\{screenshotsFile}'
-print(screenshotsFolderFile)
+
 
 # User chooses their key
 print("Program a key:")
@@ -68,12 +67,17 @@ mouseListener.start()
 # We enter this infinite loop and can't escape it. It doesn't matter because the listeners are running in the background on a different
 # thread and they're constantly updating var values based on keyboard and mouse events. If the "if" condition is met in the While loop
 # the body will execute. 
+# We don't want the loop to stop until the user tells it to. It allows the user to keep using their key binds and taking screenshots.
+
 while True: 
     comboEvent.wait()
+    increment += 1
+    print(f"{increment}")
 
     print("Combo detected. Taking screenshot.")
     
     with mss.MSS() as screenshot: 
+        screenshotsFolderFile = rf'{screenshotsFolder}\{screenshotsFile}_{increment}.png'
         screenshot.shot(output=screenshotsFolderFile)
         
     targetKeyPressed = False
