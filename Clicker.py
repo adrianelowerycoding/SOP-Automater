@@ -1,13 +1,19 @@
 """
 IDEAS: 
 
-    I think this module should only be for key selecting. These keys will be used in other modules to start screenshots.  
+    I think this module/class should only be for key selecting. These keys will be used in other modules to start screenshots.  
     OR preferably just make both classes, organize them by duties, and make them work together in the main.py.
 
     - Fullscreen screenshot 1 button command. User chooses. 
     - Full window screenshot 1 button command. User chooses. 
     - Fullscreen screenshot + selection/cropping 1 button command. User chooses. 
         - This one works w/ cv2Test bc you have to also use the mouse. I think probably just have cv2 pull up the 
+
+    My functions may be beefy but they're setup/configuration/bootstrap functions. They gather input from the user and set key binds. 
+    I will move the "always listening" to the main.py I think and the screenshot functionality to the screenshot module/class.
+
+    The big problem with screenshotKey() is that it does a long-running loop that has to be available while the entire program
+    runs. I should split this bit up into another function (startScreenshotListener()) or just hard code it into the main.py.
           
 """
 
@@ -22,14 +28,23 @@ import mss.tools
 import os
 import time 
 
-# Store the user's key choice here. Can reuse this.
-targetKey = None
-targetKeyPressed = False # this was the "armed"
+
 mouseLeftClicked = False
 comboEvent = Event()
 increment = 0
 screenshotsFolder = r'C:\Users\adria\Documents\Coding\Python\Big Projects\SOP Automater\SOP-Automater\Screenshots'
 
+# There should be some locked-buttons for program commands. Ex. 'q' or 'esc' should stop everything.
+
+# There will be 3 pick key functions. 1. One Button Screenshot, 2. Screenshot Selection Combo, 3. Window Screenshot Combo
+# 1. Whatever button you want 
+# 2. Whatever two buttons you want
+#   - The actual screenshot body is coming from the 'cv2Test.py' file. Aka the screenshot class. 
+# 3. Whatever two buttons you want
+
+# When the user selected a screenshot button the key runs the same you choose it. That means the annoying Windows key bind 
+# runs the same time you choose the key to replace the Windows key bind. So I had to create an array of those keys and shut
+# them down pre-emptively to avoid this behavior.
 BEGINNING_DISABLED_KEYS = [
     "left windows",
     "right windows",
@@ -38,7 +53,7 @@ BEGINNING_DISABLED_KEYS = [
     "f9", "f10", "f11", "f12",
 ]
 
-user_disabled_keys = []
+user_disabled_keys = [] # Whatever buttons the user types in are added to this list. 
 
 # Disables the keys in the array
 for key in BEGINNING_DISABLED_KEYS: 
@@ -47,34 +62,77 @@ for key in BEGINNING_DISABLED_KEYS:
 # User chooses their screenshots naming convention
 screenshotsFile = input("Screenshot Naming Convention: ").strip()
 
-# User chooses their key
-print("Program a key:")
+def bindingScreenshotKey(): 
 
-def pick_key(key): # make this for full screen
-    global targetKey
-    print(key)
-    targetKey = key
-    print(key)
-    keyString = str(key)[4:]
-    print(type(keyString))
-    print(f"Selected Key: {keyString}")
-    kb.block_key(keyString)
-    for key in BEGINNING_DISABLED_KEYS:
-        if keyString != key: # Don't let important keys get used, like the alphabet. Ban the alphabet. 
-            kb.unblock_key(key)
-            # I stopped here. 
+    screenshotEvent = Event()
+    screenshotKey = None # Store user's key choice here
+    screenshotKeyPressed = False # Flag
+    
+    # User chooses their screenshot key
+    print("Program a key:")
 
-   # input("Type your chosen key:") # This was a test for alphabet chars. If you blocked a key you can't type it or use it in
-                                    # any other context than what you assigned it for. 
+    def pick_key(key): # make this for full screen
+        global targetKey
+        print(key)
+        targetKey = key
+        print(key)
+        keyString = str(key)[4:]
+        print(type(keyString))
+        print(f"Selected Key: {keyString}")
+        kb.block_key(keyString)
+        for key in BEGINNING_DISABLED_KEYS:
+            if keyString != key: # I'm primarily doing this for if the user doesn't choose "windows" buttons 
+                kb.unblock_key(key)
+                # I stopped here. 
+        if keyString not in BEGINNING_DISABLED_KEYS: 
+            user_disabled_keys.append(keyString)
+        return False # Stops listener 
+    
+    # See if user's screenshot button has been pressed
+    def screenshotKeyPress(keyPressed): 
+        nonlocal screenshotKeyPressed
+        if keyPressed == screenshotKey:
+            screenshotEvent.set()
+            screenshotKeyPressed = True
+            print("Screenshot key pressed")
 
-    return False # Stops listener 
+    # STEP 1: Listener for picking key / stops when key is picked
+    # BLOCKING. This listener blocks all other code from running until a key is picked. 
+    with keyboard.Listener(on_press=pick_key) as pickKeyListener: 
+        pickKeyListener.join()
 
-# See if user's button has been pressed
-def targetKeyPress(keyPressed): 
-    global targetKeyPressed
-    if keyPressed == targetKey:
-        targetKeyPressed = True
-        print("Target key pressed")
+    # STEP 2: Listener for screenshot key
+    screenshotKeyPressListener = keyboard.Listener(on_press=screenshotKeyPress)
+    screenshotKeyPressListener.start()
+
+# STEP 3: Function that only runs if both target key and mouse were clicked.
+# We enter this infinite loop and can't escape it. It doesn't matter because the listeners are running in the background on a different
+# thread and they're constantly updating var values based on keyboard and mouse events. If the "if" condition is met in the While loop
+# the body will execute. 
+# We don't want the loop to stop until the user tells it to. It allows the user to keep using their key binds and taking screenshots.
+    while True: 
+        screenshotEvent.wait()
+        increment += 1
+        print(f"{increment}")
+
+        print("Sct. key detected. Taking screenshot.")
+        # Make this a method in screenshot class. Pipe it into this class to keep sepration of concerns. 
+        with mss.MSS() as screenshot: 
+            screenshotsFolderFile = rf'{screenshotsFolder}\{screenshotsFile}_{increment}.png'
+            screenshot.shot(output=screenshotsFolderFile)
+                
+        screenshotKeyPressed = False
+        screenshotEvent.clear()
+
+
+    # input("Type your chosen key:") # This was a test for alphabet chars. If you blocked a key you can't type it or use it in
+                                        # any other context than what you assigned it for. 
+
+
+bindingScreenshotKey()
+       
+
+    
 
 
 # Listening for a mouse click
@@ -85,43 +143,14 @@ def targetKeyPress(keyPressed):
 #         mouseLeftClicked = True
 #         print ("Left click detected")
 
-# Listens for combo to be pressed
-def on_click(x, y, button, pressed): 
-    if pressed and targetKeyPressed and button == mouse.Button.left:
-        comboEvent.set()
+# Listens for button and mouse combo to be pressed
+# def on_click(x, y, button, pressed): 
+#     if pressed and targetKeyPressed and button == mouse.Button.left:
+#         comboEvent.set()
 
+# mouseListener = mouse.Listener(on_click=on_click)
+# mouseListener.start()
 
-# STEP 1: Listener for picking key / stops when key is picked
-# BLOCKING. This listener blocks all other code from running until a key is picked. 
-with keyboard.Listener(on_press=pick_key) as pickKeyListener: 
-    pickKeyListener.join()
-
-# STEP 2: Listener for BOTH key press and mouse click
-targetKeyPressListener = keyboard.Listener(on_press=targetKeyPress)
-mouseListener = mouse.Listener(on_click=on_click)
-
-targetKeyPressListener.start()
-mouseListener.start()
-
-# STEP 3: Function that only runs if both target key and mouse were clicked.
-# We enter this infinite loop and can't escape it. It doesn't matter because the listeners are running in the background on a different
-# thread and they're constantly updating var values based on keyboard and mouse events. If the "if" condition is met in the While loop
-# the body will execute. 
-# We don't want the loop to stop until the user tells it to. It allows the user to keep using their key binds and taking screenshots.
-
-while True: 
-    comboEvent.wait()
-    increment += 1
-    print(f"{increment}")
-
-    print("Combo detected. Taking screenshot.")
-    
-    with mss.MSS() as screenshot: 
-        screenshotsFolderFile = rf'{screenshotsFolder}\{screenshotsFile}_{increment}.png'
-        screenshot.shot(output=screenshotsFolderFile)
-        
-    targetKeyPressed = False
-    comboEvent.clear()
 
 
 
