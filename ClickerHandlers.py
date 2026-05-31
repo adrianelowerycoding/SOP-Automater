@@ -9,12 +9,8 @@ import os
 import time 
 
 
-increment = 0
-sctFile = input("Screenshot Naming Convention: ").strip()
-sctFolder = r'C:\Users\adria\Documents\Coding\Python\Big Projects\SOP Automater\SOP-Automater\Screenshots'
 sctEvent = Event()
 sctKey = None # Store user's key choice here
-sctKeyPressed = False # Flag
 
 BEGINNING_DISABLED_KEYS = [
     "left windows",
@@ -33,10 +29,10 @@ for key in BEGINNING_DISABLED_KEYS:
 
 def sct_pick_key(key): 
     global sctKey
-    print("Program a screenshot key:")
+    #print("Program a screenshot key:")
     print(key)
     sctKey = key
-    print(key)
+    print(sctKey)
     keyString = str(key)[4:]
     print(type(keyString))
     print(f"Selected Key: {keyString}")
@@ -50,27 +46,21 @@ def sct_pick_key(key):
     return False # Stops listener 
 
 def sct_key_press(keyPressed): 
-    global sctKeyPressed
     if keyPressed == sctKey:
-        sctEvent.set()
-        sctKeyPressed = True
         print("Screenshot key pressed")
+        sctEvent.set()
 
 # 1st sct loop
 def sct_loop(sct_method): 
+    increment = 0
+
     while True: 
         sctEvent.wait()
         increment += 1
         print(f"{increment}")
 
-        if sctKeyPressed == True: 
-            print("Sct. key detected. Taking screenshot.")
-            # Make this a method in screenshot class. Pipe it into this class to keep sepration of concerns. 
-            with mss.MSS() as screenshot: 
-                screenshotsFolderFile = rf'{sctFolder}\{sctFile}_{increment}.png'
-                screenshot.shot(output=screenshotsFolderFile)
+        sct_method(increment)
                 
-        sctKeyPressed = False
         sctEvent.clear()
 
 # 2nd sct loop
