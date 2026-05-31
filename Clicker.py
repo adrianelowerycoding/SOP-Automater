@@ -1,23 +1,14 @@
 """
-IDEAS: 
+    I have split the Clicker module into 2 different modules: ClickerListeners and ClickerHandlers. The Listener module houses all
+    the listeners and Handlers the callback functions for those listeners. I am able to wire these methods together in main.py
+    which makes my code much more readable and easier to add onto. The methods are all static so I've placed
+    them in modules, NOT classes. 
 
-    I think this module/class should only be for key selecting. These keys will be used in other modules to start screenshots.  
-    OR preferably just make both classes, organize them by duties, and make them work together in the main.py.
+    Future Changes: 5 - 31 - 26 
 
-    - Fullscreen screenshot 1 button command. User chooses. 
-    - Full window screenshot 1 button command. User chooses. 
-    - Fullscreen screenshot + selection/cropping 1 button command. User chooses. 
-        - This one works w/ cv2Test bc you have to also use the mouse. I think probably just have cv2 pull up the 
-
-    My functions may be beefy but they're setup/configuration/bootstrap functions. They gather input from the user and set key binds. 
-    I will move the "always listening" to the main.py I think and the screenshot functionality to the screenshot module/class.
-
-    The big problem with screenshotKey() is that it does a long-running loop that has to be available while the entire program
-    runs. I should split this bit up into another function (startScreenshotListener()) or just hard code it into the main.py.
+        - Organize functions for cv2Test (cv2 handles the selection screenshot) to make it a module. 
           
 """
-
-
 
 from pynput import mouse, keyboard
 import keyboard as kb
@@ -31,8 +22,7 @@ import time
 
 mouseLeftClicked = False
 comboEvent = Event()
-increment = 0
-screenshotsFolder = r'C:\Users\adria\Documents\Coding\Python\Big Projects\SOP Automater\SOP-Automater\Screenshots'
+
 
 # There should be some locked-buttons for program commands. Ex. 'q' or 'esc' should stop everything.
 
@@ -64,6 +54,8 @@ screenshotsFile = input("Screenshot Naming Convention: ").strip()
 
 def bindingScreenshotKey(): 
 
+    increment = 0
+    screenshotsFolder = r'C:\Users\adria\Documents\Coding\Python\Big Projects\SOP Automater\SOP-Automater\Screenshots'
     screenshotEvent = Event()
     screenshotKey = None # Store user's key choice here
     screenshotKeyPressed = False # Flag
@@ -72,9 +64,9 @@ def bindingScreenshotKey():
     print("Program a key:")
 
     def pick_key(key): # make this for full screen
-        global targetKey
+        nonlocal screenshotKey
         print(key)
-        targetKey = key
+        screenshotKey = key
         print(key)
         keyString = str(key)[4:]
         print(type(keyString))
@@ -115,11 +107,12 @@ def bindingScreenshotKey():
         increment += 1
         print(f"{increment}")
 
-        print("Sct. key detected. Taking screenshot.")
-        # Make this a method in screenshot class. Pipe it into this class to keep sepration of concerns. 
-        with mss.MSS() as screenshot: 
-            screenshotsFolderFile = rf'{screenshotsFolder}\{screenshotsFile}_{increment}.png'
-            screenshot.shot(output=screenshotsFolderFile)
+        if screenshotKeyPressed == True: 
+            print("Sct. key detected. Taking screenshot.")
+            # Make this a method in screenshot class. Pipe it into this class to keep sepration of concerns. 
+            with mss.MSS() as screenshot: 
+                screenshotsFolderFile = rf'{screenshotsFolder}\{screenshotsFile}_{increment}.png'
+                screenshot.shot(output=screenshotsFolderFile)
                 
         screenshotKeyPressed = False
         screenshotEvent.clear()
