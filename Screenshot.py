@@ -6,37 +6,13 @@ import mss.tools
 import numpy
 import cv2
 
-targetKey = keyboard.Key.shift
-targetKeyPressed = False
-
-screenshotsFolder = r'C:\Users\adria\Documents\Coding\Python\Big Projects\SOP Automater\SOP-Automater\Screenshots'
-
-screenshotsFile = input("Screenshot Naming Convention: ").strip()
-screenshotsFile = screenshotsFile + ".png"
-screenshotsFolderFile = rf'{screenshotsFolder}\{screenshotsFile}'
-print(screenshotsFolderFile)
-
-def targetKeyPress(keyPressed): 
-    global targetKeyPressed
-    if keyPressed == targetKey:
-        targetKeyPressed = True
-        print("Target key pressed")
-    return False
-
-def mouse_click(x, y, button, pressed): 
-    if pressed and targetKeyPressed and button == mouse.Button.left:
-        print("Combo detected. Capturing screenshot")
-
-        with mss.MSS() as screenshot: 
-            screenshot.shot(output=screenshotsFolderFile)
-    return False
 
 
-with keyboard.Listener(on_press=targetKeyPress) as targetKeyPressListener: 
-    targetKeyPressListener.join()
-
-with mouse.Listener(on_click=mouse_click) as mouseClickListener: 
-    mouseClickListener.join()
+def sct_fullscreen(sctFile, sctFolder, increment):
+    print("Sct. key detected. Taking screenshot.")
+    with mss.MSS() as screenshot: 
+        screenshotsFolderFile = rf'{sctFolder}\{sctFile}_{increment}.png'
+        screenshot.shot(output=screenshotsFolderFile)
 
 
 # First Method: screenshot.grab and .to_png
@@ -57,6 +33,36 @@ with mouse.Listener(on_click=mouse_click) as mouseClickListener:
 
 
 # Third Method: .grab() and using 
+
+
+# -----
+# Old Key and Mouse combo: 
+
+# targetKey = keyboard.Key.shift
+# targetKeyPressed = False
+
+# def targetKeyPress(keyPressed): 
+#     global targetKeyPressed
+#     if keyPressed == targetKey:
+#         targetKeyPressed = True
+#         print("Target key pressed")
+#     return False
+
+# def mouse_click(x, y, button, pressed): 
+#     if pressed and targetKeyPressed and button == mouse.Button.left:
+#         print("Combo detected. Capturing screenshot")
+
+#         with mss.MSS() as screenshot: 
+#             screenshot.shot(output=screenshotsFolderFile)
+#     return False
+
+
+# with keyboard.Listener(on_press=targetKeyPress) as targetKeyPressListener: 
+#     targetKeyPressListener.join()
+
+# with mouse.Listener(on_click=mouse_click) as mouseClickListener: 
+#     mouseClickListener.join()
+
 
 
 

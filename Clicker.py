@@ -7,6 +7,8 @@
     Future Changes: 5 - 31 - 26 
 
         - Organize functions for cv2Test (cv2 handles the selection screenshot) to make it a module. 
+        - screenshot naming convention and folder path is set in Main.py
+        - Screenshot.py is going to harbor all of the screenshot functions; both cv2 and mss functions
           
 """
 
