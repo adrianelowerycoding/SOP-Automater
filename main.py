@@ -1,20 +1,7 @@
 """
-NEXT CHANGE: 
+This version of the project will be MODULAR, NON-CLASS. 
 
-I have multiple state vars. that are spread across multiple modules. I should group them into one module so they're easier
-to keep track of and use. The states are: 
-
-increment
-sctKey
-sctEvent #I'm not totally sure about this one
-
-NEXT CHANGE: UPDATE: 6 - 6 - 26 
-
-I will NOT make a global module for global variables. That makes no sense for this project; it makes more sense organizationally to 
-put the global vars in the modules they pertain to since they only pertain to their certain modules. 
-
-I will make two versions of this project: One w/ global modular variables (non-class), and a modular class version w/ no global vars. 
-This will show that I am able to convert projects to OOP and will also help if I ever intend to scale this project in the future. 
+The global vars will stay in the modules they pertain to, not a 'global state' module. 
 
 """
 
