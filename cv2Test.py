@@ -10,6 +10,7 @@ import cv2
 
 top_left_corner=[]
 bottom_right_corner=[]
+rectDrawn = False
 
 image = cv2.imread(r"C:\Users\adria\Documents\Coding\Python\Big Projects\SOP Automater\SOP-Automater\Screenshots\test.png")
 tempImage = image.copy()
@@ -18,11 +19,14 @@ tempImage = image.copy()
 def drawRectangle(action, x, y, flags, *userdata):
   # Referencing global variables; making them accesible inside this function
   global top_left_corner, bottom_right_corner
+  global rectDrawn
+
   # Mark the top left corner when left mouse button is pressed
-  if action == cv2.EVENT_LBUTTONDOWN:
+  if rectDrawn == False and action == cv2.EVENT_LBUTTONDOWN:
     top_left_corner = [(x,y)]
     # When left mouse button is released, mark bottom right corner
-  elif action == cv2.EVENT_LBUTTONUP:
+  elif rectDrawn == False and action == cv2.EVENT_LBUTTONUP:
+    rectDrawn = True
     bottom_right_corner = [(x,y)]   
     # Draw the rectangle; it applies the drawing to the image IN MEMORY; changes not seen because changed image not yet uploaded
     # to window.
@@ -46,12 +50,22 @@ while k!=113: #q quits the loop and the program
     k = cv2.waitKey(0) # Stops loop and waits for a key to be pressed. Mouse listener is not stopped and is still listening.
 
     if (k == 99): #c replaces original image w/ copy, "wiping" the board clean
+        rectDrawn = False
         image = tempImage.copy() # Must be COPY because it willl only clear one time if not 
         cv2.imshow("Window", image)
 
+    elif (k == 115): 
+        x1, y1 = top_left_corner[0]
+        x2, y2 = bottom_right_corner[0]
+
+        cv2.imwrite(rf"C:\Users\adria\Documents\Coding\Python\Big Projects\SOP Automater\SOP-Automater\Screenshots\screenshot_{increment}.png",
+                        tempImage[min(y1,y2):max(y1,y2), min(x1,x2):max(x1,x2)]
+                             )
+        print("Saved screenshot selection")
+
 cv2.destroyAllWindows()
 
-
+# Make multiple rectangles before clearing impossible
 # Make user choose screenshot naming convention. 
 # Make screenshot names increment. 
 # Choose selection created by rectangle. 

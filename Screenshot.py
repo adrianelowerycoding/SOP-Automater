@@ -6,8 +6,6 @@ import mss.tools
 import numpy
 import cv2
 
-
-
 def sct_fullscreen(sctFile, sctFolder, increment):
     print("Sct. key detected. Taking screenshot.")
     with mss.MSS() as screenshot: 
