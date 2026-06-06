@@ -3,6 +3,10 @@ This version of the project will be MODULAR, NON-CLASS.
 
 The global vars will stay in the modules they pertain to, not a 'global state' module. 
 
+This version of the project will also be NON-LAMBDA. I will have increment be the only value passed into sct_fullscreen(). It will 
+pick it up from sct_loop(). I'll put sctFile nad sctFolder in the screenshot.py module. This removes the need for lambda but puts
+the proj. into global state. It simplifies the project bc. Lambda complicates it.
+
 """
 
 # Wouldn't it just be so much easier just to have increment be the only value passed into sct_fullscreen? It would pick it up from
