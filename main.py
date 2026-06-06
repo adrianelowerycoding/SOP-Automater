@@ -25,22 +25,13 @@ import ClickerListeners as cl
 import Screenshot as sct
 
 
-# Ask for screenshot naming convention, file name, and sct folder. Put them all in 
-
-sct_file = input("Screenshot Naming Convention: ").strip()
-sct_folder = r'C:\Users\adria\Documents\Coding\Python\Big Projects\SOP Automater\SOP-Automater\Screenshots'
+sct.get_sct_path() # Gathering file and folder info
 
 print("Program a screenshot key:")
 cl.sct_pick_key_listener(ch.sct_pick_key) # Stops program until sct key chosen
 cl.sct_key_press_listener(ch.sct_key_press) # Starts listening for sct key press
 
-ch.sct_loop(lambda increment: sct.sct_fullscreen(sct_file, sct_folder, increment)) 
-# 1. while loop starts 
-# 2. while loop is paused until event happens
-# 3. Once event happens the sct_method is called and increment is passed to it 
-# 4. 
-
-# a function calling a function 
+ch.sct_loop(sct.sct_fullscreen) 
 
 
 

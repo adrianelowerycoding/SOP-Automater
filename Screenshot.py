@@ -6,10 +6,19 @@ import mss.tools
 import numpy
 import cv2
 
-def sct_fullscreen(sctFile, sctFolder, increment):
+sct_folder = None
+sct_file = None
+
+def get_sct_path(): 
+    global sct_file
+    global sct_folder
+    sct_file = input("Screenshot Naming Convention: ").strip()
+    sct_folder = r'C:\Users\adria\Documents\Coding\Python\Big Projects\SOP Automater\SOP-Automater\Screenshots'
+
+def sct_fullscreen(increment):
     print("Sct. key detected. Taking screenshot.")
     with mss.MSS() as screenshot: 
-        screenshotsFolderFile = rf'{sctFolder}\{sctFile}_{increment}.png'
+        screenshotsFolderFile = rf'{sct_folder}\{sct_file}_{increment}.png'
         screenshot.shot(output=screenshotsFolderFile)
 
 

@@ -59,7 +59,7 @@ def sct_loop(sct_method):
         increment += 1
         print(f"{increment}")
 
-        sct_method(increment) # calling method and passing increment to it
+        sct_method(increment) # calling sct_fullscreen() method and passing increment to it
                 
         sctEvent.clear()
 
