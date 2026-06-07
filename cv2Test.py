@@ -3,6 +3,10 @@
 This was supposed to be the initial commit. It's the functional programming version. The 
 initial version before everything got screwed up with OOP. 
 
+PLAN: 6 - 6 - 26 
+
+Convert this module to functions
+
 """
 
 
