@@ -7,16 +7,17 @@ This version of the project will also be NON-LAMBDA. I will have increment be th
 pick it up from sct_loop(). I'll put sctFile nad sctFolder in the screenshot.py module. This removes the need for lambda but puts
 the proj. into global state. It simplifies the project bc. Lambda complicates it.
 
-"""
 
-# Wouldn't it just be so much easier just to have increment be the only value passed into sct_fullscreen? It would pick it up from
-# sct_loop. Put sctFile and sctFolder in the screenshot.py module. This would remove the need for lambda but would put me into global
-# state. 
-# One hand: It's important to know about lambda and learn about it. 
-# 2nd hand: My code would be simplified w/o lambda. I could always use classes/config object to get rid of global state. BUT why? My
-# program relies on user input and states don't change after being set; so I don't see why it would make sense to use classes unless
-# I just want to simply encapsulate data in case I want to grow this project in the future or just show that i know OOP and convert the 
-# code base into OOP to showcase that.
+Current Update: 6 - 6 - 26 10:24pm 
+
+I'm trying to put all of cv2Test's code into Screenshot.py. But first I have to add a screenshot selection key listener and handler 
+to Clicker. There's a big bug I think in the body of sct_select_pick_key() because I just copy and pasted sct_pick_key()'s body 
+into it w/ no modifications. Bug doesn't happen when cl.pick_key_listener(ch.sct_select_pick_key) isn't ran in main.py
+
+I made the listeners reusable for all keys selected by the user. This was necessary I believe to make the code concise and easier
+to understand. No problems for this so far I believe. 
+
+"""
 
 
 # import cv2Test as cv2T
@@ -28,10 +29,14 @@ import Screenshot as sct
 sct.get_sct_path() # Gathering file and folder info
 
 print("Program a screenshot key:")
-cl.sct_pick_key_listener(ch.sct_pick_key) # Stops program until sct key chosen
-cl.sct_key_press_listener(ch.sct_key_press) # Starts listening for sct key press
+cl.pick_key_listener(ch.sct_pick_key) # Stops program until sct key chosen
+cl.key_press_listener(ch.key_press) # Starts listening for sct key press
 
-ch.sct_loop(sct.sct_fullscreen) 
+# print("Program a screenshot selection key:")
+# cl.pick_key_listener(ch.sct_select_pick_key)
+# cl.key_press_listener(ch.key_press)
+
+#ch.sct_loop(sct.sct_fullscreen) 
 
 
 

@@ -10,7 +10,8 @@ import time
 
 
 sctEvent = Event()
-sctKey = None # Store user's key choice here
+sct_key = None # Store user's key choice here
+sct_select_key = None
 
 BEGINNING_DISABLED_KEYS = [
     "left windows",
@@ -28,27 +29,47 @@ for key in BEGINNING_DISABLED_KEYS:
 
 
 def sct_pick_key(key): 
-    global sctKey
+    global sct_key
     #print("Program a screenshot key:")
     print(key)
-    sctKey = key
-    print(sctKey)
-    keyString = str(key)[4:]
-    print(type(keyString))
-    print(f"Selected Key: {keyString}")
-    kb.block_key(keyString)
+    sct_key = key
+    print(sct_key)
+    key_string = str(key)[4:]
+    print(type(key_string))
+    print(f"Selected Key: {key_string}")
+    kb.block_key(key_string)
     for key in BEGINNING_DISABLED_KEYS:
-        if keyString != key: # I'm primarily doing this for if the user doesn't choose "windows" buttons 
+        if key_string != key: # I'm primarily doing this for if the user doesn't choose "windows" buttons 
             kb.unblock_key(key)
             # I stopped here. 
-    if keyString not in BEGINNING_DISABLED_KEYS: 
-        user_disabled_keys.append(keyString)
-    return False # Stops listener 
+    if key_string not in BEGINNING_DISABLED_KEYS: 
+        user_disabled_keys.append(key_string)
+    return False # Stops listener
 
-def sct_key_press(keyPressed): 
-    if keyPressed == sctKey:
+def sct_select_pick_key(key): 
+    global sct_select_key
+    #print("Program a screenshot selection key:")
+    print(key)
+    sct_select_key = key
+    print(sct_select_key)
+    key_string = str(key)[4:]
+    print(type(key_string))
+    print(f"Selected Key: {key_string}")
+    kb.block_key(key_string)
+    for key in BEGINNING_DISABLED_KEYS:
+        if key_string != key: # I'm primarily doing this for if the user doesn't choose "windows" buttons 
+            kb.unblock_key(key)
+            # I stopped here. 
+    if key_string not in BEGINNING_DISABLED_KEYS: 
+        user_disabled_keys.append(key_string)
+    return False # Stops listener
+
+def key_press(key_pressed): 
+    if key_pressed == sct_key:
         print("Screenshot key pressed")
         sctEvent.set()
+    if key_pressed == sct_select_key:
+        print("sct select key pressed")
 
 # 1st sct loop
 def sct_loop(sct_method): 
@@ -64,6 +85,9 @@ def sct_loop(sct_method):
         sctEvent.clear()
 
 # 2nd sct loop
+
+
+# Create one large loop for all screenshot methods. This loop is called an "Event Dispatcher"
 
 
 

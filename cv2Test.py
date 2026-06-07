@@ -16,7 +16,7 @@ top_left_corner=[]
 bottom_right_corner=[]
 rectDrawn = False
 
-image = cv2.imread(r"C:\Users\adria\Documents\Coding\Python\Big Projects\SOP Automater\SOP-Automater\Screenshots\test.png")
+image = cv2.imread(r"C:\Users\adria\Documents\Coding\Python\Big Projects\SOP Automater\SOP-Automater\Screenshots\test_1.png")
 tempImage = image.copy()
  
 # function which will be called on mouse input
@@ -38,41 +38,59 @@ def drawRectangle(action, x, y, flags, *userdata):
     # Window is recreated and new changed image is uploaded into it and therefore displayed on screen.
     cv2.imshow("Window",image)
 
-# Creating the Window the screenshot sits in. 
-# cv2.WINDOW_NORMAL allows the window to be resizable
-cv2.namedWindow("Window", cv2.WINDOW_NORMAL)
-# Setting the window's size to full screen. 
-cv2.setWindowProperty("Window", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
-# Starts listener for left button mouse press and release
-cv2.setMouseCallback("Window", drawRectangle)
+def window_creation(): 
+  # Creating the Window the screenshot sits in. 
+  cv2.namedWindow("Window", cv2.WINDOW_NORMAL) # cv2.WINDOW_NORMAL allows the window to be resizable
+  # Setting the window's size to full screen. 
+  cv2.setWindowProperty("Window", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
 
-k=0
-# After all above stuff has been loaded into memory, we jump into while loop to get program running.
-while k!=113: #q quits the loop and the program
-    # Actually running/showing/opening the Window we created
-    cv2.imshow("Window", image)
-    k = cv2.waitKey(0) # Stops loop and waits for a key to be pressed. Mouse listener is not stopped and is still listening.
+def mouse_listener(): 
+  # Starts listener for left button mouse press and release; calls 'drawRectangle()' when event detected
+  cv2.setMouseCallback("Window", drawRectangle)
 
-    if (k == 99): #c replaces original image w/ copy, "wiping" the board clean
-        rectDrawn = False
-        image = tempImage.copy() # Must be COPY because it willl only clear one time if not 
-        cv2.imshow("Window", image)
 
-    elif (k == 115): 
-        x1, y1 = top_left_corner[0]
-        x2, y2 = bottom_right_corner[0]
+def loop(): 
+  k=0
+  increment = 0
+  # After all above stuff has been loaded into memory, we jump into while loop to get program running.
+  while k!=113: #q quits the loop and the program
+      
+      global rectDrawn
+      global tempImage
+      global image
+      # Actually running/showing/opening the Window we created; this is when the window is FIRST opened.
+      cv2.imshow("Window", image)
+      k = cv2.waitKey(0) # Stops loop and listens for key presses INSIDE THE WINDOW. 
+      # Mouse listener is not stopped and is still listening.
 
-        cv2.imwrite(rf"C:\Users\adria\Documents\Coding\Python\Big Projects\SOP Automater\SOP-Automater\Screenshots\screenshot_{increment}.png",
-                        tempImage[min(y1,y2):max(y1,y2), min(x1,x2):max(x1,x2)]
-                             )
-        print("Saved screenshot selection")
+      if (k == 99): #c replaces original image w/ copy, "wiping" the board clean
+          rectDrawn = False
+          image = tempImage.copy() # Must be COPY because it willl only clear one time if not 
+          cv2.imshow("Window", image)
 
-cv2.destroyAllWindows()
+      elif (k == 115): # 's' saves screenshot selection
+          increment += 1
+          x1, y1 = top_left_corner[0]
+          x2, y2 = bottom_right_corner[0]
+
+          cv2.imwrite(rf"C:\Users\adria\Documents\Coding\Python\Big Projects\SOP Automater\SOP-Automater\Screenshots\screenshot_{increment}.png",
+                          tempImage[min(y1,y2):max(y1,y2), min(x1,x2):max(x1,x2)]
+                              )
+          print(f'Saved screenshot selection {increment}')
+
+
+window_creation()
+mouse_listener()
+loop()
+cv2.destroyAllWindows() 
 
 # Make multiple rectangles before clearing impossible
 # Make user choose screenshot naming convention. 
-# Make screenshot names increment. 
-# Choose selection created by rectangle. 
-# Create 's' command to save screenshot. 
+# Make screenshot names increment. $
+# Choose selection created by rectangle. $ 
+# Create 's' command to save screenshot. $
+# after saving screenshot clear the rectangle from the board and allow user to take another
+# Place some functions of this into the sct_loop_2 in ClickerHandler
+# Put all of this code into Screenshot.py
 
 

@@ -9,13 +9,14 @@ import os
 import time 
 
 
-def sct_pick_key_listener(callback): # sct_pick_key method
-    with keyboard.Listener(on_press=callback) as pickKeyListener: 
-        pickKeyListener.join()
+def pick_key_listener(callback): 
+    with keyboard.Listener(on_press=callback) as pick_key_listener: 
+        pick_key_listener.join()
 
-def sct_key_press_listener(callback): # sct_key_press method
-    screenshotKeyPressListener = keyboard.Listener(on_press=callback)
-    screenshotKeyPressListener.start()
+
+def key_press_listener(callback): 
+    key_press_listener = keyboard.Listener(on_press=callback)
+    key_press_listener.start()
 
 
 
