@@ -17,6 +17,9 @@ into it w/ no modifications. Bug doesn't happen when cl.pick_key_listener(ch.sct
 I made the listeners reusable for all keys selected by the user. This was necessary I believe to make the code concise and easier
 to understand. No problems for this so far I believe. 
 
+I've also determined that an Event Dispatcher loop is going to need to be created in ClickerHandlers.py to dispatch functions when
+certain screenshot buttons are pressed. 
+
 """
 
 
